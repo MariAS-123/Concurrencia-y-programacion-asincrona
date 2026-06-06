@@ -45,7 +45,7 @@ fun AnrSimulationScreen(
 
         Button(
             onClick = {
-                simulationViewModel.cargarDatosAsincronos()
+                simulationViewModel.cargarDatosAsincronosConValidacion(textInput)
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = currentUiState !is SimulationUiState.Loading

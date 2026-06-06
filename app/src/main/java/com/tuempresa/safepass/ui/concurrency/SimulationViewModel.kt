@@ -19,35 +19,26 @@ class SimulationViewModel : ViewModel() {
     val uiState: StateFlow<SimulationUiState> =
         _uiState.asStateFlow()
 
-    fun cargarDatosAsincronos() {
+    fun cargarDatosAsincronosConValidacion(textoUsuario: String) {
 
         viewModelScope.launch {
-
-            Log.d(
-                "ANR_LAB",
-                "Inicio Corrutina en hilo: ${Thread.currentThread().name}"
-            )
 
             _uiState.value = SimulationUiState.Loading
 
             try {
 
-                val resultado = withContext(Dispatchers.IO) {
-
-                    Log.d(
-                        "ANR_LAB",
-                        "Procesando cálculo intensivo en segundo plano sobre hilo: ${Thread.currentThread().name}"
+                if (textoUsuario.uppercase() == "ERROR") {
+                    throw IllegalArgumentException(
+                        "Entrada restringida detectada por simulación de seguridad."
                     )
-
-                    Thread.sleep(5000)
-
-                    "Datos descargados con éxito desde segundo plano."
                 }
 
-                Log.d(
-                    "ANR_LAB",
-                    "Retorno seguro a Dispatchers.Main sobre hilo: ${Thread.currentThread().name}"
-                )
+                val resultado = withContext(Dispatchers.IO) {
+
+                    Thread.sleep(3000)
+
+                    "Procesamiento asíncrono limpio completado."
+                }
 
                 _uiState.value =
                     SimulationUiState.Success(resultado)
@@ -56,7 +47,7 @@ class SimulationViewModel : ViewModel() {
 
                 _uiState.value =
                     SimulationUiState.Error(
-                        "Fallo asíncrono controlado: ${e.localizedMessage}"
+                        e.localizedMessage ?: "Error desconocido"
                     )
             }
         }
